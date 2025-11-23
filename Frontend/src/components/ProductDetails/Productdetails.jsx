@@ -1,11 +1,8 @@
 import { useRef, useEffect, useState, useContext } from "react";
 import CartContext from "../../contexts/Cart/cart.contexts.js";
 import { useNavigate } from "react-router-dom";
-import { ArrowRightIcon, ArrowUpRightIcon, DownArrowIcon, ShoppingBagIcon } from "../../assets/index.js";
+import { ArrowRightIcon, DownArrowIcon, ShoppingBagIcon } from "../../assets/index.js";
 import { Loader } from "../../components"
-
-
-// const product = { brand: 'Ralph Lauren', name: 'The Iconic Rugby Shirt', price: 19500, imageurl: "https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-AI710717116051_alternate10?$rl_4x5_pdp$", description: "A stylish and versatile women’s jacket crafted for comfort and elegance. Perfect for layering in all seasons, offering a sleek look with durable quality.", sizes: ["M", "L"] }
 
 function Productdetails({ product }) {
 

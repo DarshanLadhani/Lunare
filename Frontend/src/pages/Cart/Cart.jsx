@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Cartitemscontainer, OrderSummary } from "../../components";
-import { ArrowRightIcon, MensCollectionImage, WomenCollectionImage, FootWearCollectionImage, ChanelAccessoriesImage } from "../../assets";
+import {  MensCollectionImage, WomenCollectionImage, FootWearCollectionImage, ChanelAccessoriesImage } from "../../assets";
 import CartContext from "../../contexts/Cart/cart.contexts.js";
 import {Loader} from "../../components";
 

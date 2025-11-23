@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import SearchProductContext from "../../contexts/Searchproducts/searchproducts.context.js";
 import axios from "axios";
 import { Loader } from "../../components"
-import { ArrowRightIcon, MensCollectionImage, WomenCollectionImage, FootWearCollectionImage, ChanelAccessoriesImage } from "../../assets";
+import { MensCollectionImage, WomenCollectionImage, FootWearCollectionImage, ChanelAccessoriesImage } from "../../assets";
 
 const processSearchQuery = (query) => {
 

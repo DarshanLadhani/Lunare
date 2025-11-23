@@ -1,98 +1,140 @@
-import { FilterIcon , DownArrowIcon , LeftArrowIcon } from "../../assets";
+import { useState, useEffect, useContext } from "react";
+import { CrossMarkIcon, DownArrowIcon } from "../../assets/index.js";
+import axios from "axios";
+import SearchProductContext from "../../contexts/Searchproducts/searchproducts.context.js"
+import { Loader } from "../index.js"
 
-function Productfilters() {
+function Productfilters({ isOpen, onClose, query }) {
+    if (!isOpen) return null;
+
+    const [showContent, setShowContent] = useState(false);
+    const [GenderTabOpen, setGenderTabOpen] = useState(false);
+    const [CategoryTabOpen, setCategoryTabOpen] = useState(false);
+
+    const [selectedGenders, setSelectedGenders] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState([]);
+
+    const { setSearchProducts } = useContext(SearchProductContext);
+    const [loading, setLoading] = useState(false)
+
+
+    const handleCategoryFilters = (e) => {
+        const value = e.target.value
+
+        if (selectedCategory.includes(value)) {
+            setSelectedCategory(prev => prev.filter(category => category !== value));
+        } else {
+            setSelectedCategory(prev => [...prev, value])
+        }
+    }
+
+
+    useEffect(() => {
+        if (isOpen) {
+            setTimeout(() => setShowContent(true), 10);
+        } else {
+            setShowContent(false)
+        }
+    }, [isOpen]);
+
+
+    if (!isOpen) return null;
+
+    const clearFilters = () => {
+        setSelectedGenders([]);
+        setSelectedCategory([]);
+        setPriceRange({ min: "", max: "" });
+    }
+
+    const applyFilters = async () => {
+
+        const filtersData = {
+            gender: selectedGenders,
+            category: selectedCategory,
+        }
+
+        setLoading(true)
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/products/search?query=${query}`, filtersData);
+            if (response.data) {
+                setSearchProducts(response.data);
+                setShowContent(false);
+                setTimeout(onClose, 500);
+                setTimeout(() => setLoading(false), 500);
+            }
+        } catch (error) {
+            console.log("Erorr : ", error)
+        }
+
+    }
+
+    if (loading) {
+        return (
+            <Loader message="Appling Filters..." fullscreen />
+        )
+    }
+
     return (
-        <div className="w-3/10 lg:w-1/4 h-fit hidden md:flex flex-col px-2 xl:px-4 space-y-4 xl:space-y-6 border-2 border-black/60 rounded-lg">
-            <div className="flex justify-between border-b py-4 items-center">
-                <p className="text-black font-satoshi-bold text-xl xl:text-2xl">Filters</p>
-                <img src={FilterIcon} className="w-8" alt="" />
+        <div className="fixed inset-0 bg-black/50 z-50">
+            <div className={`bg-white scrollbar-hidden w-full md:w-1/2 fixed right-0 top-0 lg:w-4/10 xl:w-3/10 h-full py-4 overflow-y-auto transform transition-all duration-500 ease-in-out
+                ${showContent ? "translate-y-0 opacity-100 md:translate-x-0" : "translate-y-full opacity-0 md:translate-y-0 md:translate-x-full"}`}>
+                <div className="flex justify-between items-center px-4 mb-4">
+                    <h3 className="text-xl font-satoshi-bold">Filters</h3>
+                    <button onClick={() => { setShowContent(false); setTimeout(onClose, 500); }} className="text-black text-xl cursor-pointer">
+                        <img src={CrossMarkIcon} className="w-4" alt="" />
+                    </button>
+                </div>
+
+                <div className="flex flex-col border-y border-black/20 py-2 transition-all duration-300 overflow-hidden">
+                    <div className="flex justify-between px-4 items-center cursor-pointer" onClick={() => setGenderTabOpen((prev) => !prev)}>
+                        <p className="font-satoshi-bold text-lg">Gender</p>
+                        <img src={DownArrowIcon} className={`w-4 transition-transform duration-300 ${GenderTabOpen ? "rotate-180" : ""}`} alt="" />
+                    </div>
+                    <div className={`flex flex-col gap-y-2 px-4 overflow-hidden transition-all ease-in-out duration-500 ${GenderTabOpen ? "max-h-40 opacity-100 pt-4" : "max-h-0 opacity-0 pt-0"}`}>
+                        {["Men", "Women", "Unisex"].map((gender) => (
+                            <label key={gender} className="flex items-center gap-x-2">
+                                <input
+                                    type="radio"
+                                    name="gender"
+                                    value={gender}
+                                    checked={selectedGenders === gender}
+                                    onChange={(e) => setSelectedGenders(e.target.value)}
+                                />
+                                {gender}
+                            </label>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="flex flex-col border-y border-black/20 py-2 transition-all duration-300 overflow-hidden">
+                    <div className="flex justify-between px-4 items-center cursor-pointer" onClick={() => setCategoryTabOpen((prev) => !prev)}>
+                        <p className="font-satoshi-bold text-lg">Categories</p>
+                        <img src={DownArrowIcon} className={`w-4 transition-transform duration-300 ${CategoryTabOpen ? "rotate-180" : ""}`} alt="" />
+                    </div>
+
+                    <div className={`flex flex-col gap-y-2 px-4 overflow-hidden transition-all ease-in-out duration-500 ${CategoryTabOpen ? "max-h-50 opacity-100 pt-4" : "max-h-0 opacity-0 pt-0"}`}>
+                        {["Clothing", "Activewear", "Accessories", "Bags", "Footwear"].map((category) => (
+                            <label className="flex items-center gap-x-2">
+                                <input type="checkbox" value={category} checked={selectedCategory.includes(category)} onChange={handleCategoryFilters} />
+                                {category}
+                            </label>
+                        ))
+                        }
+                    </div>
+                </div>
+
+                <div className="p-4 flex gap-x-4">
+                    <button className="w-1/2 mt-4 py-3 cursor-pointer bg-black text-white font-satoshi-bold" onClick={applyFilters}>
+                        Apply
+                    </button>
+                    <button className="w-1/2 mt-4 py-3 cursor-pointer bg-black text-white font-satoshi-bold" onClick={clearFilters}>
+                        Clear
+                    </button>
+                </div>
+
             </div>
-            <div className="flex flex-col border-b">
-                <div className="flex justify-between items-center">
-                    <p className="text-black font-satoshi-bold text-xl">Gender</p>
-                    <img src={DownArrowIcon} className="w-4" alt="" />
-                </div>
-                <div className="flex flex-col py-4 items-start gap-y-2 xl:text-lg">
-                    <div className="flex items-center gap-x-2">
-                        <input type="checkbox" name="" id="" />
-                        <span>Men</span>
-                    </div>
-                    <div className="flex items-center gap-x-2">
-                        <input type="checkbox" name="" id="" />
-                        <span>Women</span>
-                    </div>
-                </div>
-            </div>
-            <div className="flex flex-col border-b">
-                <div className="flex justify-between items-center">
-                    <p className="text-black font-satoshi-bold text-xl">Categories</p>
-                    <img src={DownArrowIcon} className="w-4" alt="" />
-                </div>
-                <div className="flex flex-col py-4 items-start gap-y-2 xl:text-lg">
-                    <div className="flex items-center gap-x-2">
-                        <input type="checkbox" name="" id="" />
-                        <span>Casual Wear</span>
-                    </div>
-                    <div className="flex items-center gap-x-2">
-                        <input type="checkbox" name="" id="" />
-                        <span>Western Wear</span>
-                    </div>
-                    <div className="flex items-center gap-x-2">
-                        <input type="checkbox" name="" id="" />
-                        <span>Active Wear</span>
-                    </div>
-                </div>
-            </div>
-            <div className="flex flex-col border-b">
-                <div className="flex justify-between items-center">
-                    <p className="text-black font-satoshi-bold text-xl">Price</p>
-                    <img src={DownArrowIcon} className="w-4" alt="" />
-                </div>
-                <div className="py-4">
-                    <input type="range" className="w-full" name="" id="" />
-                </div>
-            </div>
-            <div className="flex flex-col border-b">
-                <div className="flex justify-between items-center">
-                    <p className="text-black font-satoshi-bold text-xl">Size</p>
-                    <img src={DownArrowIcon} className="w-4" alt="" />
-                </div>
-                <div className="py-4 flex gap-2 flex-wrap xl:text-lg">
-                    <button className="p-2 border-2 rounded-full w-12 h-12 text-center">XS</button>
-                    <button className="p-2 border-2 rounded-full w-12 h-12 text-center">S</button>
-                    <button className="p-2 border-2 rounded-full w-12 h-12 text-center">M</button>
-                    <button className="p-2 border-2 rounded-full w-12 h-12 text-center">L</button>
-                    <button className="p-2 border-2 rounded-full w-12 h-12 text-center">XL</button>
-                    <button className="p-2 border-2 rounded-full w-12 h-12 text-center">XXL</button>
-                </div>
-            </div>
-            <div className="flex flex-col">
-                <div className="flex justify-between items-center">
-                    <p className="text-black font-satoshi-bold text-xl">Quick Filters</p>
-                    <img src={DownArrowIcon} className="w-4" alt="" />
-                </div>
-                <div className="flex flex-col pt-4 pr-4 items-start gap-y-2 xl:text-lg">
-                    <div className="flex items-center justify-between w-full gap-x-2">
-                        <span>On Discount</span>
-                        <img src={LeftArrowIcon} alt="" />
-                    </div>
-                    <div className="flex items-center  justify-between w-full gap-x-2">
-                        <span>On Sale</span>
-                        <img src={LeftArrowIcon} alt="" />
-                    </div>
-                    <div className="flex items-center  justify-between w-full  gap-x-2">
-                        <span>Top Selling</span>
-                        <img src={LeftArrowIcon} alt="" />
-                    </div>
-                    <div className="flex items-center  justify-between w-full gap-x-2">
-                        <span>New Arrivals</span>
-                        <img src={LeftArrowIcon} alt="" />
-                    </div>
-                </div>
-            </div>
-            <button className="bg-black px-4 py-2 text-white rounded-full mb-4 xl:text-lg xl:mb-6">Apply Filters</button>
-        </div>
-    )
+        </div >
+    );
 }
 
-export default Productfilters
+export default Productfilters;

@@ -2,47 +2,9 @@ import { useContext, useState, useEffect } from "react";
 import SearchProductContext from "../../contexts/Searchproducts/searchproducts.context.js";
 import { FilterIcon } from "../../assets";
 import Card from "../Card/Card.jsx";
-import ProductFiltersMobile from "../ProductFiltersMobile/Productfiltersmobile.jsx";
+import ProductFiltersMobile from "../ProductFilters/Productfilters.jsx";
 import { Loader } from "../../components";
 
-const defaultproducts = [
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-    { brand: 'Ralph Lauren', name: 'Men rugby shirt collar', price: 2800, imageurls: ["https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1484922_lifestyle?$plpDeskRF$"] },
-    { brand: "Prada", name: 'designer women shoes', price: 70000, imageurls: ["https://www.mytheresa.com/media/1094/1238/100/8d/P01060743.jpg"] },
-];
 
 
 function Productresults({ query }) {

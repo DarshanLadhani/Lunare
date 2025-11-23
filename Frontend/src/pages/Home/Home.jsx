@@ -1,6 +1,5 @@
 import { Hero, Shopbycategory, Newarrivals, Topsellingitems, Featuredbrands, BrandCollectionContainer } from "../../components"
 import { DiorVideo, RalphLaurenVideo, ArmaniVideo } from "../../assets"
-import toast from "react-hot-toast"
 
 function Home() {
   return (

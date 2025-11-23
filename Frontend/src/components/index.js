@@ -10,7 +10,6 @@ export {default as BrandCollectionContainer} from './BrandCollectionContainer/Br
 export {default as Featuredbrands} from './FeaturedBrands/Featuredbrands.jsx'
 export {default as Shopbycategory} from './ShopByCategory/Shopbycategory.jsx'
 export {default as ProductFilters} from './ProductFilters/Productfilters.jsx'
-export {default as ProductFiltersMobile} from './ProductFiltersMobile/Productfiltersmobile.jsx'
 export {default as ProductResults} from './Productresults/Productresults.jsx'
 export {default as ProductsDetails} from './ProductDetails/Productdetails.jsx'
 export {default as CartItems} from './CartItems/Cartitems.jsx'
